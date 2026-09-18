@@ -32,5 +32,6 @@ A full-featured Django web application where users can register as blood donors,
 
 ---
 
-Live link and visit: `https://bind-manufactured-reported-claimed.trycloudflare.com`
+Live link and visit: 
+https://bind-manufactured-reported-claimed.trycloudflare.com
 
