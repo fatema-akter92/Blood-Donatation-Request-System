@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+
+{% block title %}Blood Requests - Blood Donate & Request System{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-1"><i class="fa-solid fa-notes-medical text-danger me-2"></i>Active Blood Requests</h2>
+            <p class="text-muted small mb-0">Browse and respond to urgent blood requests from patients in need.</p>
+        </div>
+        <div>
+            {% if user.is_authenticated %}
+                <a href="{% url 'request_create' %}" class="btn btn-danger fw-bold shadow-sm">
+                    <i class="fa-solid fa-plus-circle me-1"></i>Post New Request
+                </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Filter Form -->
+    <div class="card card-custom p-4 mb-4">
+        <form method="get" class="row g-3">
+            <div class="col-md-4">
+                <label class="form-label fw-bold small text-muted">Blood Group</label>
+                {{ form.blood_group }}
+            </div>
+            <div class="col-md-4">
+                <label class="form-label fw-bold small text-muted">Location</label>
+                {{ form.location }}
+            </div>
+            <div class="col-md-3">
+                <label class="form-label fw-bold small text-muted">Status</label>
+                {{ form.status }}
+            </div>
+            <div class="col-md-1 d-flex align-items-end">
+                <button type="submit" class="btn btn-danger w-100 fw-bold">
+                    <i class="fa-solid fa-filter"></i>
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Requests Grid -->
+    {% if page_obj %}
+        <div class="row g-4 mb-4">
+            {% for req in page_obj %}
+                <div class="col-md-4">
+                    <div class="card card-custom h-100 p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="badge badge-blood fs-6"><i class="fa-solid fa-droplet me-1"></i>{{ req.blood_group }}</span>
+                            <span class="badge {% if req.status == 'Pending' %}status-badge-pending{% elif req.status == 'Fulfilled' %}status-badge-fulfilled{% else %}status-badge-cancelled{% endif %} px-2 py-1">
+                                {{ req.status }}
+                            </span>
+                        </div>
+
+                        <h5 class="fw-bold mb-1 text-dark">{{ req.patient_name }}</h5>
+                        <p class="text-muted small mb-1"><i class="fa-solid fa-hospital text-danger me-1"></i>{{ req.hospital_name }}</p>
+                        <p class="text-muted small mb-3"><i class="fa-solid fa-location-dot text-danger me-1"></i>{{ req.location }}</p>
+
+                        <div class="bg-light p-3 rounded mb-3 small">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span class="text-muted">Required Date:</span>
+                                <span class="fw-bold text-danger">{{ req.required_date }}</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-1">
+                                <span class="text-muted">Bags Needed:</span>
+                                <span class="fw-bold">{{ req.bags_required }} Bag(s)</span>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <span class="text-muted">Contact:</span>
+                                <span class="fw-bold">{{ req.contact_number }}</span>
+                            </div>
+                        </div>
+
+                        <a href="{% url 'request_detail' req.pk %}" class="btn btn-outline-danger btn-sm w-100 fw-bold mt-auto">
+                            View Request Details
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        {% if page_obj.has_other_pages %}
+            <nav aria-label="Request pagination">
+                <ul class="pagination justify-content-center">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item"><a class="page-link text-danger" href="?page={{ page_obj.previous_page_number }}">&laquo; Prev</a></li>
+                    {% endif %}
+                    {% for i in page_obj.paginator.page_range %}
+                        <li class="page-item {% if page_obj.number == i %}active{% endif %}">
+                            <a class="page-link {% if page_obj.number == i %}bg-danger border-danger{% else %}text-danger{% endif %}" href="?page={{ i }}">{{ i }}</a>
+                        </li>
+                    {% endfor %}
+                    {% if page_obj.has_next %}
+                        <li class="page-item"><a class="page-link text-danger" href="?page={{ page_obj.next_page_number }}">Next &raquo;</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        {% endif %}
+    {% else %}
+        <div class="alert alert-info text-center py-4">
+            <i class="fa-solid fa-info-circle fa-2x mb-2"></i>
+            <h5>No blood requests match your current filters.</h5>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

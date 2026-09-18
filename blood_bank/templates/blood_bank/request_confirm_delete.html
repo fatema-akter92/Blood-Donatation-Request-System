@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}Confirm Delete Request - {{ req.patient_name }}{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card card-custom p-4 text-center">
+                <i class="fa-solid fa-triangle-exclamation fa-3x text-danger mb-3"></i>
+                <h4 class="fw-bold mb-2">Delete Blood Request?</h4>
+                <p class="text-muted mb-4">Are you sure you want to delete the blood request for <strong>"{{ req.patient_name }}"</strong> ({{ req.blood_group }})? This action cannot be undone.</p>
+
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="d-flex justify-content-center gap-3">
+                        <a href="{% url 'request_detail' req.pk %}" class="btn btn-outline-secondary fw-bold px-4">Cancel</a>
+                        <button type="submit" class="btn btn-danger fw-bold px-4">Yes, Delete</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+
+{% block title %}My Profile - Blood Donate & Request System{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row g-4">
+        <!-- Donor Profile Card -->
+        <div class="col-md-5">
+            <div class="card card-custom p-4 text-center">
+                {% if profile and profile.profile_picture %}
+                    <img src="{{ profile.profile_picture.url }}" alt="{{ user.username }}" class="donor-avatar mx-auto mb-3">
+                {% else %}
+                    <div class="donor-avatar bg-danger text-white d-flex align-items-center justify-content-center mx-auto mb-3 fs-2 fw-bold">
+                        {{ user.first_name|default:user.username|slice:":1"|upper }}
+                    </div>
+                {% endif %}
+
+                <h3 class="fw-bold mb-1">{{ user.get_full_name|default:user.username }}</h3>
+                <p class="text-muted mb-2">@{{ user.username }}</p>
+
+                {% if profile %}
+                    <div class="mb-3">
+                        <span class="badge badge-blood fs-6"><i class="fa-solid fa-droplet me-1"></i>Blood Group: {{ profile.blood_group }}</span>
+                        <span class="badge {% if profile.availability == 'Available' %}bg-success{% else %}bg-secondary{% endif %} fs-6 ms-1">
+                            <i class="fa-solid fa-circle-dot me-1"></i>{{ profile.availability }}
+                        </span>
+                    </div>
+
+                    <ul class="list-group list-group-flush text-start mb-3">
+                        <li class="list-group-item d-flex justify-content-between px-0">
+                            <span class="text-muted"><i class="fa-solid fa-envelope me-2"></i>Email</span>
+                            <span class="fw-bold">{{ user.email|default:"N/A" }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between px-0">
+                            <span class="text-muted"><i class="fa-solid fa-phone me-2"></i>Phone</span>
+                            <span class="fw-bold">{{ profile.phone }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between px-0">
+                            <span class="text-muted"><i class="fa-solid fa-location-dot me-2"></i>Location</span>
+                            <span class="fw-bold">{{ profile.location }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between px-0">
+                            <span class="text-muted"><i class="fa-solid fa-calendar me-2"></i>Last Donation</span>
+                            <span class="fw-bold">{{ profile.last_donation_date|default:"None / First Time" }}</span>
+                        </li>
+                    </ul>
+
+                    {% if profile.description %}
+                        <div class="p-3 bg-light rounded text-start mb-3">
+                            <h6 class="fw-bold text-muted mb-1"><i class="fa-solid fa-info-circle me-1"></i>About / Notes</h6>
+                            <p class="small mb-0">{{ profile.description }}</p>
+                        </div>
+                    {% endif %}
+                {% else %}
+                    <div class="alert alert-warning">
+                        You have not set up your donor profile details yet.
+                    </div>
+                {% endif %}
+
+                <a href="{% url 'profile_edit' %}" class="btn btn-outline-danger fw-bold w-100 mt-2">
+                    <i class="fa-solid fa-pen-to-square me-2"></i>Edit Profile
+                </a>
+            </div>
+        </div>
+
+        <!-- User Requests List -->
+        <div class="col-md-7">
+            <div class="card card-custom p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4 class="fw-bold mb-0"><i class="fa-solid fa-list-check text-danger me-2"></i>My Blood Requests</h4>
+                    <a href="{% url 'request_create' %}" class="btn btn-danger btn-sm fw-bold">
+                        <i class="fa-solid fa-plus me-1"></i>New Request
+                    </a>
+                </div>
+
+                {% if user_requests %}
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Patient</th>
+                                    <th>Blood Group</th>
+                                    <th>Hospital</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for req in user_requests %}
+                                    <tr>
+                                        <td class="fw-bold">{{ req.patient_name }}</td>
+                                        <td><span class="badge badge-blood">{{ req.blood_group }}</span></td>
+                                        <td class="small">{{ req.hospital_name }}</td>
+                                        <td class="small">{{ req.required_date }}</td>
+                                        <td>
+                                            <span class="badge {% if req.status == 'Pending' %}status-badge-pending{% elif req.status == 'Fulfilled' %}status-badge-fulfilled{% else %}status-badge-cancelled{% endif %} px-2 py-1">
+                                                {{ req.status }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <a href="{% url 'request_detail' req.pk %}" class="btn btn-sm btn-outline-secondary"><i class="fa-solid fa-eye"></i></a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-4 text-muted">
+                        <i class="fa-solid fa-folder-open fa-3x mb-2 opacity-50"></i>
+                        <p class="mb-0">You have not submitted any blood requests yet.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

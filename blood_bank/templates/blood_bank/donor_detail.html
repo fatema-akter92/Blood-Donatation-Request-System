@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block title %}Donor Profile - {{ donor.user.get_full_name|default:donor.user.username }}{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card card-custom p-4 text-center">
+                {% if donor.profile_picture %}
+                    <img src="{{ donor.profile_picture.url }}" alt="{{ donor.user.username }}" class="donor-avatar mx-auto mb-3">
+                {% else %}
+                    <div class="donor-avatar bg-danger text-white d-flex align-items-center justify-content-center mx-auto mb-3 fs-2 fw-bold">
+                        {{ donor.user.first_name|default:donor.user.username|slice:":1"|upper }}
+                    </div>
+                {% endif %}
+
+                <h3 class="fw-bold mb-1">{{ donor.user.get_full_name|default:donor.user.username }}</h3>
+                <p class="text-muted mb-3"><i class="fa-solid fa-location-dot text-danger me-1"></i>{{ donor.location }}</p>
+
+                <div class="mb-4">
+                    <span class="badge badge-blood fs-5 px-3 py-2"><i class="fa-solid fa-droplet me-1"></i>Blood Group: {{ donor.blood_group }}</span>
+                    <span class="badge {% if donor.availability == 'Available' %}bg-success{% else %}bg-secondary{% endif %} fs-5 px-3 py-2 ms-2">
+                        <i class="fa-solid fa-circle-dot me-1"></i>{{ donor.availability }}
+                    </span>
+                </div>
+
+                <div class="card bg-light border-0 p-3 text-start mb-4">
+                    <h5 class="fw-bold text-dark border-bottom pb-2 mb-3"><i class="fa-solid fa-address-card text-danger me-2"></i>Contact & Details</h5>
+                    
+                    <div class="mb-2">
+                        <strong><i class="fa-solid fa-phone me-2 text-muted"></i>Contact Number:</strong> 
+                        <a href="tel:{{ donor.phone }}" class="text-danger fw-bold ms-1">{{ donor.phone }}</a>
+                    </div>
+                    
+                    <div class="mb-2">
+                        <strong><i class="fa-solid fa-envelope me-2 text-muted"></i>Email:</strong> 
+                        <span class="ms-1">{{ donor.user.email|default:"Not provided" }}</span>
+                    </div>
+
+                    <div class="mb-2">
+                        <strong><i class="fa-solid fa-calendar-check me-2 text-muted"></i>Last Donation Date:</strong> 
+                        <span class="ms-1">{{ donor.last_donation_date|default:"First-time Donor / Not specified" }}</span>
+                    </div>
+
+                    <div class="mb-0">
+                        <strong><i class="fa-solid fa-cake-candles me-2 text-muted"></i>Date of Birth / Age:</strong> 
+                        <span class="ms-1">{{ donor.date_of_birth|default:"Not specified" }}</span>
+                    </div>
+                </div>
+
+                {% if donor.description %}
+                    <div class="card bg-light border-0 p-3 text-start mb-4">
+                        <h6 class="fw-bold text-dark mb-2"><i class="fa-solid fa-quote-left text-danger me-2"></i>About Donor</h6>
+                        <p class="small text-muted mb-0">{{ donor.description }}</p>
+                    </div>
+                {% endif %}
+
+                <div class="d-flex justify-content-between align-items-center pt-2">
+                    <a href="{% url 'donor_list' %}" class="btn btn-outline-secondary fw-bold">&larr; Back to Donors</a>
+                    <a href="tel:{{ donor.phone }}" class="btn btn-danger fw-bold">
+                        <i class="fa-solid fa-phone-flip me-2"></i>Call Donor
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - Blood Donate & Request System{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="hero-section text-center">
+    <div class="container py-4">
+        <h1 class="hero-title mb-3"><i class="fa-solid fa-droplet text-warning me-2"></i>Blood Donate & Request</h1>
+        <p class="hero-tagline mb-4">"Find a donor. Save a life."</p>
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+            <a href="{% url 'donor_list' %}" class="btn btn-light btn-lg px-4 fw-bold shadow-sm text-danger">
+                <i class="fa-solid fa-search me-2"></i>Find Blood Donor
+            </a>
+            <a href="{% url 'request_create' %}" class="btn btn-warning btn-lg px-4 fw-bold shadow-sm text-dark">
+                <i class="fa-solid fa-plus-circle me-2"></i>Request Blood
+            </a>
+            {% if not user.is_authenticated or not user.donor_profile %}
+            <a href="{% url 'profile_edit' %}" class="btn btn-outline-light btn-lg px-4 fw-bold shadow-sm">
+                <i class="fa-solid fa-hand-holding-heart me-2"></i>Become a Donor
+            </a>
+            {% endif %}
+            <a href="{% url 'request_list' %}" class="btn btn-dark btn-lg px-4 fw-bold shadow-sm">
+                <i class="fa-solid fa-list me-2"></i>View Blood Requests
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Platform Statistics -->
+<div class="container my-5">
+    <div class="row g-4">
+        <div class="col-md-3 col-6">
+            <div class="stat-card">
+                <i class="fa-solid fa-users fa-2x text-danger mb-2"></i>
+                <div class="stat-number">{{ total_donors }}</div>
+                <div class="stat-label">Registered Donors</div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="stat-card">
+                <i class="fa-solid fa-check-circle fa-2x text-success mb-2"></i>
+                <div class="stat-number">{{ available_donors }}</div>
+                <div class="stat-label">Available Donors</div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="stat-card">
+                <i class="fa-solid fa-hourglass-half fa-2x text-warning mb-2"></i>
+                <div class="stat-number">{{ active_requests }}</div>
+                <div class="stat-label">Active Requests</div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="stat-card">
+                <i class="fa-solid fa-heart fa-2x text-danger mb-2"></i>
+                <div class="stat-number">{{ fulfilled_requests }}</div>
+                <div class="stat-label">Fulfilled Requests</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Urgent Requests -->
+<div class="container mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="fw-bold mb-0 text-dark"><i class="fa-solid fa-clock-rotate-left text-danger me-2"></i>Recent Blood Requests</h3>
+        <a href="{% url 'request_list' %}" class="btn btn-outline-danger btn-sm fw-bold">View All Requests &rarr;</a>
+    </div>
+
+    {% if recent_requests %}
+        <div class="row g-4">
+            {% for req in recent_requests %}
+                <div class="col-md-4">
+                    <div class="card card-custom h-100 p-3">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="badge badge-blood"><i class="fa-solid fa-droplet me-1"></i>{{ req.blood_group }}</span>
+                            <span class="badge {% if req.status == 'Pending' %}status-badge-pending{% elif req.status == 'Fulfilled' %}status-badge-fulfilled{% else %}status-badge-cancelled{% endif %} px-2 py-1">
+                                {{ req.status }}
+                            </span>
+                        </div>
+                        <h5 class="fw-bold mb-1">{{ req.patient_name }}</h5>
+                        <p class="text-muted small mb-2"><i class="fa-solid fa-hospital me-1"></i>{{ req.hospital_name }}</p>
+                        <p class="text-muted small mb-2"><i class="fa-solid fa-location-dot me-1"></i>{{ req.location }}</p>
+                        <div class="d-flex justify-content-between text-secondary small mt-3 pt-2 border-top">
+                            <span><i class="fa-solid fa-calendar me-1"></i>{{ req.required_date }}</span>
+                            <span><i class="fa-solid fa-box-archive me-1"></i>{{ req.bags_required }} Bag(s)</span>
+                        </div>
+                        <a href="{% url 'request_detail' req.pk %}" class="btn btn-outline-danger btn-sm mt-3 w-100 fw-bold">View Details</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info text-center">No blood requests have been posted yet.</div>
+    {% endif %}
+</div>
+{% endblock %}

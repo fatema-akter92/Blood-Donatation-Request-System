@@ -1,0 +1,123 @@
+/* Custom Blood Donation Theme CSS */
+:root {
+    --primary-red: #dc3545;
+    --dark-red: #b02a37;
+    --light-red: #f8d7da;
+    --hero-bg: linear-gradient(135deg, #800020 0%, #dc3545 100%);
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+    color: #212529;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.main-content {
+    flex: 1;
+}
+
+.navbar-brand {
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.hero-section {
+    background: var(--hero-bg);
+    color: white;
+    padding: 4rem 1rem;
+    border-radius: 0 0 1.5rem 1.5rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.hero-title {
+    font-size: 2.8rem;
+    font-weight: 800;
+}
+
+.hero-tagline {
+    font-size: 1.25rem;
+    opacity: 0.9;
+}
+
+.card-custom {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card-custom:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+}
+
+.badge-blood {
+    background-color: var(--primary-red);
+    color: white;
+    font-size: 0.9rem;
+    font-weight: 700;
+    padding: 0.4em 0.8em;
+    border-radius: 20px;
+}
+
+.stat-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+    border-bottom: 4px solid var(--primary-red);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.stat-number {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: var(--primary-red);
+}
+
+.stat-label {
+    color: #6c757d;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+}
+
+.donor-avatar {
+    width: 90px;
+    height: 90px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 3px solid var(--primary-red);
+}
+
+.donor-avatar-sm {
+    width: 45px;
+    height: 45px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.status-badge-pending {
+    background-color: #ffc107;
+    color: #000;
+}
+
+.status-badge-fulfilled {
+    background-color: #198754;
+    color: #fff;
+}
+
+.status-badge-cancelled {
+    background-color: #6c757d;
+    color: #fff;
+}
+
+footer {
+    background-color: #212529;
+    color: #adb5bd;
+    padding: 2rem 0;
+    margin-top: 3rem;
+}

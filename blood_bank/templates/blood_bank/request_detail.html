@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+{% block title %}Request Details - {{ req.patient_name }}{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-7">
+            <div class="card card-custom p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="badge badge-blood fs-5 px-3 py-2"><i class="fa-solid fa-droplet me-1"></i>Required: {{ req.blood_group }}</span>
+                    <span class="badge {% if req.status == 'Pending' %}status-badge-pending{% elif req.status == 'Fulfilled' %}status-badge-fulfilled{% else %}status-badge-cancelled{% endif %} fs-6 px-3 py-2">
+                        Status: {{ req.status }}
+                    </span>
+                </div>
+
+                <h3 class="fw-bold mb-1 text-dark">{{ req.patient_name }}</h3>
+                <p class="text-muted small mb-4">Posted by {{ req.requester.get_full_name|default:req.requester.username }} on {{ req.created_at|date:"d M Y, H:i" }}</p>
+
+                <div class="card bg-light border-0 p-3 mb-4">
+                    <h5 class="fw-bold text-danger border-bottom pb-2 mb-3"><i class="fa-solid fa-hospital me-2"></i>Medical & Request Information</h5>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <strong>Patient Name:</strong>
+                            <div class="text-secondary">{{ req.patient_name }}</div>
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Blood Group Required:</strong>
+                            <div class="text-danger fw-bold fs-5">{{ req.blood_group }}</div>
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Hospital Name:</strong>
+                            <div class="text-secondary">{{ req.hospital_name }}</div>
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Location:</strong>
+                            <div class="text-secondary">{{ req.location }}</div>
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Required Date:</strong>
+                            <div class="text-danger fw-bold">{{ req.required_date }}</div>
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Bags Required:</strong>
+                            <div class="text-dark fw-bold">{{ req.bags_required }} Bag(s)</div>
+                        </div>
+                        <div class="col-md-12">
+                            <strong>Contact Number:</strong>
+                            <div><a href="tel:{{ req.contact_number }}" class="text-danger fw-bold fs-5">{{ req.contact_number }}</a></div>
+                        </div>
+                    </div>
+                </div>
+
+                {% if req.description %}
+                    <div class="card bg-light border-0 p-3 mb-4">
+                        <h6 class="fw-bold text-dark mb-2"><i class="fa-solid fa-align-left text-danger me-2"></i>Reason / Additional Details</h6>
+                        <p class="small text-muted mb-0">{{ req.description }}</p>
+                    </div>
+                {% endif %}
+
+                <!-- Owner Controls -->
+                {% if user == req.requester or user.is_staff %}
+                    <div class="card border-danger p-3 mb-4 bg-light">
+                        <h6 class="fw-bold text-danger mb-2"><i class="fa-solid fa-sliders me-1"></i>Manage Request Status</h6>
+                        <div class="d-flex gap-2 flex-wrap mb-3">
+                            <a href="{% url 'update_request_status' req.pk 'Pending' %}" class="btn btn-sm btn-outline-warning {% if req.status == 'Pending' %}active fw-bold{% endif %}">Set Pending</a>
+                            <a href="{% url 'update_request_status' req.pk 'Fulfilled' %}" class="btn btn-sm btn-outline-success {% if req.status == 'Fulfilled' %}active fw-bold{% endif %}">Set Fulfilled</a>
+                            <a href="{% url 'update_request_status' req.pk 'Cancelled' %}" class="btn btn-sm btn-outline-secondary {% if req.status == 'Cancelled' %}active fw-bold{% endif %}">Set Cancelled</a>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <a href="{% url 'request_edit' req.pk %}" class="btn btn-outline-primary btn-sm fw-bold">
+                                <i class="fa-solid fa-pen-to-square me-1"></i>Edit Request
+                            </a>
+                            <a href="{% url 'request_delete' req.pk %}" class="btn btn-outline-danger btn-sm fw-bold">
+                                <i class="fa-solid fa-trash me-1"></i>Delete Request
+                            </a>
+                        </div>
+                    </div>
+                {% endif %}
+
+                <div class="d-flex justify-content-between align-items-center">
+                    <a href="{% url 'request_list' %}" class="btn btn-outline-secondary fw-bold">&larr; Back to Requests</a>
+                    <a href="tel:{{ req.contact_number }}" class="btn btn-danger fw-bold">
+                        <i class="fa-solid fa-phone me-2"></i>Contact Requester
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
