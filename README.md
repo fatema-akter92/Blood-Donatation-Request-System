@@ -32,6 +32,5 @@ A full-featured Django web application where users can register as blood donors,
 
 ---
 
-Live link and visit: 
- http://127.0.0.1:8000/
+
 
